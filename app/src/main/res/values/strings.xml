@@ -20,4 +20,58 @@
     <string name="percent">%</string>
     <string name="sign">±</string>
     <string name="sqrt">√</string>
+
+    <string name="default_output">0</string>
+
+    <string-array name="btn_texts">
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>√</item>
+        <item>C</item>
+
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>÷</item>
+        <item>%</item>
+
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>×</item>
+        <item>-</item>
+
+        <item>±</item>
+        <item>0</item>
+        <item>.</item>
+        <item>+</item>
+        <item>=</item>
+    </string-array>
+
+    <string-array name="btn_tags">
+        <item>btn7</item>
+        <item>btn8</item>
+        <item>btn9</item>
+        <item>btnSqrt</item>
+        <item>btnClear</item>
+
+        <item>btn4</item>
+        <item>btn5</item>
+        <item>btn6</item>
+        <item>btnDivide</item>
+        <item>btnPercent</item>
+
+        <item>btn1</item>
+        <item>btn2</item>
+        <item>btn3</item>
+        <item>btnMultiply</item>
+        <item>btnMinus</item>
+
+        <item>btnSign</item>
+        <item>btn0</item>
+        <item>btnDecimal</item>
+        <item>btnAdd</item>
+        <item>btnEquals</item>
+    </string-array>
 </resources>
