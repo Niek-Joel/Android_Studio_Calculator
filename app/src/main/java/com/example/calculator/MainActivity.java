@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.constraintlayout.widget.Guideline;
 
 import com.example.calculator.databinding.ActivityMainBinding;
 
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
-
     private final int KEYS_HEIGHT = 4;
     private final int KEYS_WIDTH = 5;
     private ActivityMainBinding binding;
@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
         int[][] verticals = new int[KEYS_WIDTH][KEYS_HEIGHT];
 
         // TextView at the top to show calculator output
-        int id = View.generateViewId();
+        int tvId = View.generateViewId();
         TextView tv = new TextView(this);
-        tv.setId(id);
-        tv.setTag("TextView" + id);
+        tv.setId(tvId);
+        tv.setTag("TextView" + tvId);
         tv.setText(getResources().getString(R.string.default_output));
         tv.setTextSize(48);
         tv.setGravity(Gravity.CENTER_VERTICAL | android.view.Gravity.END);
@@ -60,11 +60,12 @@ public class MainActivity extends AppCompatActivity {
                 int btnID = View.generateViewId();
                 Button btn = new Button(this);
                 btn.setId(btnID);
-                btn.setTag(btn_tags[btnIndex]);        // NOTE: String Arrays btn_tags & btn_texts have to be in the same order
+                btn.setTag(btn_tags[btnIndex]);
                 btn.setText(btn_texts[btnIndex]);
                 layout.addView(btn);
                 btnIndex++;
 
+                // Adding button IDs to arrays
                 horizontals[i][j] = btnID;
                 verticals[j][i] = btnID;
             }
@@ -77,21 +78,19 @@ public class MainActivity extends AppCompatActivity {
         ConstraintSet set = new ConstraintSet();
         set.clone(layout);
 
-        // Constraints
-        // TextView Constraint (output)
-        set.connect(tv.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
-//        set.connect(tv.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
-//        set.connect(tv.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
+        /* TextView Constraint (output)
+           connect params: startID, startSide, endID, endSide */
+        set.connect(tvId, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
+        set.connect(tvId, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
 
         // Horizontal Chains
-//        for (int i = 0; i < horizontals.length; i++) {
-//            int[] hIdArray = horizontals[i];
-//            for (int j = 0; j < hIdArray.length; j++) {
-//                int hId = hIdArray[j];
-//                 set.connect(id, ConstraintSet.LEFT,);
-//            }
-//        }
+        for (int i = 0; i < horizontals.length; i++) {
+            int[] hIdArray = horizontals[i];
+            set.createHorizontalChain(binding.guideWest.getId(), ConstraintSet.LEFT, binding.guideEast.getId(), ConstraintSet.RIGHT, hIdArray, null, ConstraintSet.CHAIN_SPREAD_INSIDE);
+        }
+
         // Vertical Chains
 
+        set.applyTo(layout);
     }
 }
