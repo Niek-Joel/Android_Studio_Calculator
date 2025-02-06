@@ -1,7 +1,7 @@
 package com.example.calculator;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -10,13 +10,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.constraintlayout.widget.Guideline;
 
 import com.example.calculator.databinding.ActivityMainBinding;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     private final int KEYS_HEIGHT = 4;
@@ -32,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLayout() {
+        // Dip padding 8
+        int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+
         // Create an instance of ConstraintLayout
         ConstraintLayout layout = binding.main;
 
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 btn.setId(btnID);
                 btn.setTag(btn_tags[btnIndex]);
                 btn.setText(btn_texts[btnIndex]);
+                btn.setTextSize(24);
                 layout.addView(btn);
                 btnIndex++;
 
@@ -71,25 +71,39 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-//        Log.d("Mainactivity", "horizontals = " + Arrays.deepToString(horizontals));
-//        Log.d("Mainactivity", "verticals = " + Arrays.deepToString(verticals));
-
         //  Create Constraint Set
         ConstraintSet set = new ConstraintSet();
         set.clone(layout);
 
-        /* TextView Constraint (output)
-           connect params: startID, startSide, endID, endSide */
-        set.connect(tvId, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT);
+        // TextView Constraint (output)
+        set.connect(tvId, ConstraintSet.RIGHT, binding.guideEast.getId(), ConstraintSet.RIGHT);
         set.connect(tvId, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
+        set.setMargin(tvId, ConstraintSet.BOTTOM, margin);
 
-        // Horizontal Chains
+        // Button margins
         for (int i = 0; i < horizontals.length; i++) {
-            int[] hIdArray = horizontals[i];
-            set.createHorizontalChain(binding.guideWest.getId(), ConstraintSet.LEFT, binding.guideEast.getId(), ConstraintSet.RIGHT, hIdArray, null, ConstraintSet.CHAIN_SPREAD_INSIDE);
+            for (int j = 0; j < verticals.length; j++) {
+                int btnId = horizontals[i][j];
+                findViewById(btnId).setPadding(padding,padding,padding,padding);
+                set.constrainWidth(btnId, 0);
+                set.constrainHeight(btnId, 0);
+                set.setMargin(btnId, ConstraintSet.TOP, margin);
+                set.setMargin(btnId, ConstraintSet.BOTTOM, margin);
+                set.setMargin(btnId, ConstraintSet.RIGHT, margin);
+                set.setMargin(btnId, ConstraintSet.LEFT, margin);
+            }
         }
 
-        // Vertical Chains
+        // Horizontal Chains constraint
+        for (int[] hIdArray : horizontals) {
+            set.createHorizontalChain(binding.guideWest.getId(), ConstraintSet.RIGHT,
+                    binding.guideEast.getId(), ConstraintSet.LEFT, hIdArray, null, ConstraintSet.CHAIN_SPREAD_INSIDE);
+        }
+        // Vertical Chains constraint
+        for (int[] vIdArray : verticals) {
+            set.createVerticalChain(binding.guideNorth.getId(), ConstraintSet.TOP,
+                    binding.guideSouth.getId(), ConstraintSet.BOTTOM, vIdArray, null, ConstraintSet.CHAIN_SPREAD_INSIDE);
+        }
 
         set.applyTo(layout);
     }
