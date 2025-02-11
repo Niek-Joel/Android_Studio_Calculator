@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -13,17 +14,41 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.calculator.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivityView extends AppCompatActivity {
     private final int KEYS_HEIGHT = 4;
     private final int KEYS_WIDTH = 5;
+    private CalculatorClickHandler click;
     private ActivityMainBinding binding;
+    private Presenter presenter;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+        click = new CalculatorClickHandler();
         initLayout();
+
+        // Create presenter and Model
+        presenter = new Presenter();
+        Model model = new Model();
+
+        // Register Activity View and Model with Presenter
+//        presenter.addView(this);
+//        presenter.addModel(model);
+
+        // Initialize Model to default values
+        model.initDefault();
+    }
+
+    class CalculatorClickHandler implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            String tag = view.getTag().toString();
+            Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
+            toast.show();
+            // INSERT EVENT HANDLING CODE HERE
+        }
     }
 
     private void initLayout() {
@@ -62,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 btn.setTag(btn_tags[btnIndex]);
                 btn.setText(btn_texts[btnIndex]);
                 btn.setTextSize(24);
+                btn.setOnClickListener(click);      // Set click listener for each button
                 layout.addView(btn);
                 btnIndex++;
 
@@ -81,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
         set.setMargin(tvId, ConstraintSet.BOTTOM, margin);
 
         // Button margins
-        for (int i = 0; i < horizontals.length; i++) {
+        for (int[] horizontal : horizontals) {
             for (int j = 0; j < verticals.length; j++) {
-                int btnId = horizontals[i][j];
-                findViewById(btnId).setPadding(padding,padding,padding,padding);
+                int btnId = horizontal[j];
+                findViewById(btnId).setPadding(padding, padding, padding, padding);
                 set.constrainWidth(btnId, 0);
                 set.constrainHeight(btnId, 0);
                 set.setMargin(btnId, ConstraintSet.TOP, margin);
