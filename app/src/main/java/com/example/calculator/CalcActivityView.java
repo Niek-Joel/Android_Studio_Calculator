@@ -14,12 +14,15 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.calculator.databinding.ActivityMainBinding;
 
-public class MainActivityView extends AppCompatActivity {
+import java.beans.PropertyChangeEvent;
+
+public class CalcActivityView extends AppCompatActivity {
     private final int KEYS_HEIGHT = 4;
     private final int KEYS_WIDTH = 5;
+    private TextView outputTextView;
     private CalculatorClickHandler click;
     private ActivityMainBinding binding;
-    private Presenter presenter;
+    private CalcPresenter calcPresenter;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,24 +33,28 @@ public class MainActivityView extends AppCompatActivity {
         initLayout();
 
         // Create presenter and Model
-        presenter = new Presenter();
-        Model model = new Model();
+        calcPresenter = new CalcPresenter();
+        CalcModel calcModel = new CalcModel();
 
         // Register Activity View and Model with Presenter
-//        presenter.addView(this);
-//        presenter.addModel(model);
+        calcPresenter.setView(this);
+        calcPresenter.setModel(calcModel);
 
         // Initialize Model to default values
-        model.initDefault();
+        calcModel.initDefault();
+    }
+
+    public void setOutput(String value) {
+        outputTextView.setText(value);
     }
 
     class CalculatorClickHandler implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             String tag = view.getTag().toString();
-            Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
-            toast.show();
-            // INSERT EVENT HANDLING CODE HERE
+//            Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
+//            toast.show();
+            calcPresenter.onTagEntered(tag.toString());
         }
     }
 
@@ -69,13 +76,13 @@ public class MainActivityView extends AppCompatActivity {
 
         // TextView at the top to show calculator output
         int tvId = View.generateViewId();
-        TextView tv = new TextView(this);
-        tv.setId(tvId);
-        tv.setTag("TextView" + tvId);
-        tv.setText(getResources().getString(R.string.default_output));
-        tv.setTextSize(48);
-        tv.setGravity(Gravity.CENTER_VERTICAL | android.view.Gravity.END);
-        layout.addView(tv);
+        outputTextView = new TextView(this);
+        outputTextView.setId(tvId);
+        outputTextView.setTag("TextView" + tvId);
+        outputTextView.setText(getResources().getString(R.string.default_output));
+        outputTextView.setTextSize(48);
+        outputTextView.setGravity(Gravity.CENTER_VERTICAL | android.view.Gravity.END);
+        layout.addView(outputTextView);
 
         // Creating buttons
         int btnIndex = 0;

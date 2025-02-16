@@ -47,10 +47,10 @@
         <item>btnMultiply</item>
         <item>btnMinus</item>
 
-        <item>btnSign</item>
+        <item>btnChangeSign</item>
         <item>btn0</item>
         <item>btnDecimal</item>
-        <item>btnAdd</item>
+        <item>btnPlus</item>
         <item>btnEquals</item>
     </string-array>
 </resources>
