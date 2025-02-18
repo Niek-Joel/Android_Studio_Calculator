@@ -1,25 +1,12 @@
 package com.example.calculator;
 
-import android.util.Log;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Map;
 
 public class CalcPresenter implements PropertyChangeListener {
     private CalcModel calcModel;
     private CalcActivityView calcView;
     public static final String TAG = "Presenter";
-    private static final Map<String/*Button Tag*/, OperatorEnum/*EnumEquivalent*/> tagToEnum = Map.ofEntries(
-            Map.entry("btnPlus", OperatorEnum.PLUS),
-            Map.entry("btnMinus", OperatorEnum.MINUS),
-            Map.entry("btnMultiply", OperatorEnum.MULTIPLY),
-            Map.entry("btnDivide", OperatorEnum.DIVIDE),
-            Map.entry("btnSqrt", OperatorEnum.SQRT),
-            Map.entry("btnPercent", OperatorEnum.PERCENT),
-            Map.entry("btnChangeSign", OperatorEnum.CHANGE_SIGN),
-            Map.entry("btnClear", OperatorEnum.CLEAR),
-            Map.entry("btnEquals", OperatorEnum.EQUALS));
 
     public static final String ELEMENT_OUTPUT_PROPERTY = "output";
 
@@ -31,23 +18,7 @@ public class CalcPresenter implements PropertyChangeListener {
     }
 
     public void onTagEntered(String tag) {
-       // Parse tag for operator/digit/etc.
-
-        // Is operator
-        if (tagToEnum.containsKey(tag)) {
-            OperatorEnum operator = tagToEnum.get(tag);
-            Log.i(TAG, "presenterObj.onTagEntered called with btnPlus.");
-            calcModel.setOperator(operator);
-        }
-        else {  //  decimal
-            if (tag.equals("btnDecimal")) {
-                calcModel.addDecimal();
-            }
-            else { // digit
-                int digit = Integer.parseInt(tag);
-                calcModel.addDigit(digit);
-            }
-        }
+        calcModel.stateMachine(tag);
     }
 
     public void setView(CalcActivityView view) {
@@ -60,7 +31,7 @@ public class CalcPresenter implements PropertyChangeListener {
     }
 
     public void changeOutput(CalcModel calcModel, String newOutput) {
-        calcModel.setOutput(newOutput);
+        calcModel.setDisplay(newOutput);
     }
 
     public void changeLHS(CalcModel calcModel, String newLeftOperand) {

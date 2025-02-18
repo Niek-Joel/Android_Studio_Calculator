@@ -6,7 +6,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -14,11 +13,10 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.calculator.databinding.ActivityMainBinding;
 
-import java.beans.PropertyChangeEvent;
 
 public class CalcActivityView extends AppCompatActivity {
-    private final int KEYS_HEIGHT = 4;
-    private final int KEYS_WIDTH = 5;
+    private static final int KEYS_HEIGHT = 4;
+    private static final int KEYS_WIDTH = 5;
     private TextView outputTextView;
     private CalculatorClickHandler click;
     private ActivityMainBinding binding;
@@ -52,9 +50,7 @@ public class CalcActivityView extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             String tag = view.getTag().toString();
-//            Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
-//            toast.show();
-            calcPresenter.onTagEntered(tag.toString());
+            calcPresenter.onTagEntered(tag);
         }
     }
 
